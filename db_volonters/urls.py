@@ -23,7 +23,7 @@ from main.views import MainView, VolonterListView, VolonterDetailView, VolonterC
     GeneralAlgoView, PerListView, FirstAlgoView
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     url(r'^test/$', MainView.as_view()),
     url(r'^$', MainView.as_view(), name='home'),
 

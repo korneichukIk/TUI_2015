@@ -339,7 +339,7 @@ def general_algo():
     for transport in free_transports:
         for store_house in store_houses:
             for point_of_consuming in point_of_consumings:
-                print datetime.now(), transport, store_house, point_of_consuming
+                print (datetime.now(), transport, store_house, point_of_consuming)
                 cur_sum, cur_dict = algo_2(transport, store_house, point_of_consuming)
                 if cur_sum > max_sum:
                     max_sum = cur_sum
@@ -358,7 +358,7 @@ def general_algo():
                 #             need.amount += amount
                 #             need.save()
 
-    print datetime.now(), 'second step'
+    print (datetime.now(), 'second step')
     if max_sum == 0:
         return
     else:

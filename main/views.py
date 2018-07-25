@@ -1,10 +1,10 @@
 # coding: utf-8
 from datetime import datetime, timedelta
 import random
-import urllib2
+import urllib.request
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
@@ -12,6 +12,8 @@ from django.views.generic import CreateView, UpdateView, ListView, TemplateView,
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from pytz import unicode
+
 from main.algorithms import create_stock, create_graf_chip, create_graf_danger, create_graf_time, \
     general_algo
 from main.models import Volonter, Resource, Need, GeographyPoint, StoreHouse, PointOfConsuming, Order, ResourceOrder, \
@@ -268,7 +270,7 @@ class CreateVolontersView(TemplateView):
         return super(CreateVolontersView, self).dispatch(request, *args,**kwargs)
 
     def get(self, request, *args, **kwargs):
-        print 'Fill Volonters:'
+        print ('Fill Volonters:')
         cat = CategoryResource.objects.all()
         surnames = [u'Мельник', u'Іванов', u'Калінін', u'Шемякін']
         names = [u'Василь',  u'Дмитро', u'Игорь', u'Антон']
@@ -316,7 +318,7 @@ class CreateVolontersView(TemplateView):
             )
             for i in range(random.randint(1, 2)):
                 volonter.categories.add(random.choice(all_categories))
-            print fio, telephone
+            print (fio, telephone)
 
 
         return HttpResponse('ok')
@@ -375,7 +377,7 @@ class CreatePointOfConsumingView(TemplateView):
         # p.pointofconsuming
 
         for i in range(10):
-            print i
+            print (i)
             telephone1 = u'+38' + random.choice(operators) + unicode(random.randint(1000000, 9999999))
             fio1 = random.choice(surnames) + u' ' + random.choice(names)
             point_cons1 = random.choice(list(point_cons))
@@ -432,7 +434,7 @@ class MoneyView(View):
 %s
 </data>
 </request>""" % (sign, data)
-        print ddd
+        print (ddd)
         r = urllib2.Request("https://api.privatbank.ua/p24api/rest_fiz", data=ddd,
                          headers={'Content-Type': 'application/xml'})
         u = urllib2.urlopen(r)

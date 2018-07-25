@@ -60,8 +60,8 @@ class Potential(models.Model):
         (u'Кожної неділі',u'Кожної неділі'),
         (u'Кожного місяця',u'Кожного місяця'),
     )
-    volonter = models.ForeignKey('Volonter', verbose_name=u'Волонтер')
-    category = models.ForeignKey('CategoryResource', verbose_name=u'Категорія')
+    volonter = models.ForeignKey('Volonter', verbose_name=u'Волонтер', on_delete=models.CASCADE)
+    category = models.ForeignKey('CategoryResource', verbose_name=u'Категорія', on_delete=models.CASCADE)
     period = models.CharField(max_length=30, verbose_name=u'Періодичність',choices=PERIOD_CHOICES)
 
     class Meta:
@@ -82,7 +82,7 @@ class CategoryResource(models.Model):
 
 
 class Resource(models.Model):
-    category_resource = models.ForeignKey('CategoryResource',verbose_name=u'Категорія ресурса')
+    category_resource = models.ForeignKey('CategoryResource',verbose_name=u'Категорія ресурса', on_delete=models.CASCADE)
     name = models.CharField(max_length=30,verbose_name=u'Назва ресурсу')
     unit_of_mesure = models.CharField(max_length=30,verbose_name=u'Одиниця виміру')
     weight_one_unit = models.FloatField(verbose_name=u'Маса однієї одиниці', null=True)
@@ -99,8 +99,8 @@ class Resource(models.Model):
 #///////////////////////////////////////////////////task2///////////////////////////////////////////////////////////////
 
 class Need(models.Model):
-    resource = models.ForeignKey('Resource',verbose_name=u'Потрібний ресурс')
-    order = models.ForeignKey('Order', verbose_name=u'Замовлення', null=True)
+    resource = models.ForeignKey('Resource',verbose_name=u'Потрібний ресурс', on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', verbose_name=u'Замовлення', null=True, on_delete=models.CASCADE)
     amount = models.IntegerField(verbose_name=u'Кількість ресурсу')
     finished = models.BooleanField(default=False, null=False)
     priority = models.IntegerField(verbose_name=u'Пріорітет', null=True)
@@ -124,7 +124,7 @@ class Need(models.Model):
 
 
 class Order(models.Model):
-    point_consuming = models.ForeignKey('PointOfConsuming', verbose_name=u'Точка споживання')
+    point_consuming = models.ForeignKey('PointOfConsuming', verbose_name=u'Точка споживання', on_delete=models.CASCADE)
     name = models.CharField(max_length=30, verbose_name=u'Назва', null=True)
     date_order = models.DateField(auto_now_add=True,null = True)
 
@@ -136,7 +136,7 @@ class Order(models.Model):
 
 
 class Perfomance(models.Model):
-    need = models.ForeignKey('Need', verbose_name=u'Потреба')
+    need = models.ForeignKey('Need', verbose_name=u'Потреба', on_delete=models.CASCADE)
     amount = models.IntegerField(verbose_name=u'Кількість')
     date = models.DateField(verbose_name=u'Дата виконання')
 
@@ -160,7 +160,7 @@ class Shipping(models.Model):
 
 
 class StoreHouse(models.Model):
-    geography_point = models.OneToOneField('GeographyPoint', null=True, verbose_name=u'Географічна точка')
+    geography_point = models.OneToOneField('GeographyPoint', null=True, verbose_name=u'Географічна точка', on_delete=models.CASCADE)
     volume = models.FloatField(verbose_name=u'Об"єм складу')
     rent = models.IntegerField(verbose_name=u'Ціна за м^2')
     free_volume = models.FloatField(blank=True, null=True, verbose_name=u'Вільний об"єм')
@@ -184,8 +184,8 @@ class StoreHouse(models.Model):
 
 
 class DeliveryDetalization(models.Model):
-    shipping = models.ForeignKey('Delivery', verbose_name=u'Доставка')
-    storehouse = models.ForeignKey('StoreHouse', verbose_name=u'Склад')
+    shipping = models.ForeignKey('Delivery', verbose_name=u'Доставка', on_delete=models.CASCADE)
+    storehouse = models.ForeignKey('StoreHouse', verbose_name=u'Склад', on_delete=models.CASCADE)
     amount = models.IntegerField(verbose_name=u'Кількість')
 
     class Meta:
@@ -196,8 +196,8 @@ class DeliveryDetalization(models.Model):
 
 
 class Delivery(models.Model):
-    volonter = models.ForeignKey('Volonter', verbose_name=u'Волонтер')
-    resource = models.ForeignKey('Resource', verbose_name=u'Ресурс')
+    volonter = models.ForeignKey('Volonter', verbose_name=u'Волонтер', on_delete=models.CASCADE)
+    resource = models.ForeignKey('Resource', verbose_name=u'Ресурс', on_delete=models.CASCADE)
     amount = models.IntegerField( verbose_name=u'Кількість')
     date_recomended = models.DateField( verbose_name=u'Дата рекомендована')
     date_real = models.DateField( verbose_name=u'Дата реальна')
@@ -210,8 +210,8 @@ class Delivery(models.Model):
 
 
 class ShippingDetalization(models.Model):
-    shipping = models.ForeignKey('Shipping',verbose_name=u'Відгрузка')
-    stock = models.ForeignKey('Stock', verbose_name=u'Запас')
+    shipping = models.ForeignKey('Shipping',verbose_name=u'Відгрузка', on_delete=models.CASCADE)
+    stock = models.ForeignKey('Stock', verbose_name=u'Запас', on_delete=models.CASCADE)
     amount = models.IntegerField(verbose_name=u'Кількість')
 
     class Meta:
@@ -222,8 +222,8 @@ class ShippingDetalization(models.Model):
 
 
 class Stock(models.Model):
-    store_house = models.ForeignKey('StoreHouse', null=True, verbose_name=u'Склад')
-    resource = models.ForeignKey('Resource', verbose_name=u'Ресурс')
+    store_house = models.ForeignKey('StoreHouse', null=True, verbose_name=u'Склад', on_delete=models.CASCADE)
+    resource = models.ForeignKey('Resource', verbose_name=u'Ресурс', on_delete=models.CASCADE)
     amount = models.IntegerField(null=True, verbose_name=u'Кількість одиниць ресурсу')
 
     def __unicode__(self):
@@ -242,7 +242,7 @@ class Stock(models.Model):
 #/////////////////////////////////////////////////////task4/////////////////////////////////////////////////////////////
 
 class ResourceOrder(models.Model):
-    resource = models.ForeignKey('Resource',verbose_name=u'Потрібний ресурс')
+    resource = models.ForeignKey('Resource',verbose_name=u'Потрібний ресурс', on_delete=models.CASCADE)
     amount = models.IntegerField(verbose_name=u'Кількість ресурсу')
     finished = models.BooleanField(default=False,verbose_name=u'Виконано:')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата створення')
@@ -272,7 +272,7 @@ class KindOfTransport(models.Model):
 
 
 class Transport(models.Model):
-    kind_of_transport = models.ForeignKey('KindOfTransport', verbose_name=u'Вид автомобіля')
+    kind_of_transport = models.ForeignKey('KindOfTransport', verbose_name=u'Вид автомобіля', on_delete=models.CASCADE)
     number = models.CharField(max_length=10, verbose_name=u'Держ. номер')
 
     class Meta:
@@ -283,7 +283,7 @@ class Transport(models.Model):
 
 
 class Employment(models.Model):
-    transport = models.ForeignKey('Transport', verbose_name=u'Транспорт')
+    transport = models.ForeignKey('Transport', verbose_name=u'Транспорт', on_delete=models.CASCADE)
     date_start = models.DateField(auto_now_add=True, verbose_name=u'Дата початку')
     date_finish = models.DateField(verbose_name=u'Дата закінчення')
 
@@ -295,9 +295,9 @@ class Employment(models.Model):
 
 
 class Trip(models.Model):
-    roat = models.ForeignKey('Roat', verbose_name=u'Маршрут',null=True)
-    transport = models.ForeignKey('Transport', verbose_name=u'Транспорт')
-    shipping = models.ForeignKey('Shipping', verbose_name=u'Відгрузка')
+    roat = models.ForeignKey('Roat', verbose_name=u'Маршрут',null=True, on_delete=models.CASCADE)
+    transport = models.ForeignKey('Transport', verbose_name=u'Транспорт', on_delete=models.CASCADE)
+    shipping = models.ForeignKey('Shipping', verbose_name=u'Відгрузка', on_delete=models.CASCADE)
     date_start = models.DateField(auto_now_add=True,verbose_name=u'Дата початку')
     perfomance = models.BooleanField(default=False,verbose_name=u'Виконаність')
 
@@ -313,8 +313,8 @@ class Way(models.Model):
         (True,u'Яндекс'),
         (False,u'Вручну'),
     )
-    point_from = models.ForeignKey('GeographyPoint', verbose_name=u'Звідки', related_name='point_from')
-    point_to = models.ForeignKey('GeographyPoint', verbose_name=u'Куди', related_name='point_to')
+    point_from = models.ForeignKey('GeographyPoint', verbose_name=u'Звідки', related_name='point_from', on_delete=models.CASCADE)
+    point_to = models.ForeignKey('GeographyPoint', verbose_name=u'Куди', related_name='point_to', on_delete=models.CASCADE)
     roat_length = models.IntegerField(verbose_name=u'Довжина')
     danger = models.FloatField(verbose_name=u'Небезпечність')
     passability = models.IntegerField(verbose_name=u'Проходимість')
@@ -346,9 +346,9 @@ class Way(models.Model):
 
 class Roat(models.Model):
     name = models.CharField(max_length=100,verbose_name=u'Назва', null=True)
-    storehouse = models.ForeignKey('StoreHouse', verbose_name=u'Від складу',null=True)
-    point_consuming = models.ForeignKey('PointOfConsuming', verbose_name=u'До пункту', null=True)
-    transport = models.ForeignKey('Transport',verbose_name=u'Рекомендований транспортний засіб', null=True, max_length=50)
+    storehouse = models.ForeignKey('StoreHouse', verbose_name=u'Від складу',null=True, on_delete=models.CASCADE)
+    point_consuming = models.ForeignKey('PointOfConsuming', verbose_name=u'До пункту', null=True, on_delete=models.CASCADE)
+    transport = models.ForeignKey('Transport',verbose_name=u'Рекомендований транспортний засіб', null=True, max_length=50, on_delete=models.CASCADE)
     wasys = models.ManyToManyField('Way', verbose_name=u'Проміжні дороги',blank=True)
 
     class Meta:
@@ -359,8 +359,8 @@ class Roat(models.Model):
 
 
 class MakingRoat(models.Model):
-    roat = models.ForeignKey('Roat', verbose_name=u'Маршрут')
-    way = models.ForeignKey('Way', verbose_name=u'Дорога')
+    roat = models.ForeignKey('Roat', verbose_name=u'Маршрут', on_delete=models.CASCADE)
+    way = models.ForeignKey('Way', verbose_name=u'Дорога', on_delete=models.CASCADE)
     number = models.IntegerField(verbose_name=u'Номер по порядку',null=True)
 
     def __unicode__(self):
@@ -385,8 +385,8 @@ class GeographyPoint(models.Model):
 
 
 class PointOfConsuming(models.Model):
-    user = models.OneToOneField(User, null=True, related_name='point_consuming')
-    geography_point = models.OneToOneField('GeographyPoint', null=True, verbose_name=u'Географічна точка')
+    user = models.OneToOneField(User, null=True, related_name='point_consuming', on_delete=models.CASCADE)
+    geography_point = models.OneToOneField('GeographyPoint', null=True, verbose_name=u'Географічна точка', on_delete=models.CASCADE)
     fio = models.CharField(max_length=50, null = False,verbose_name=u'ПІБ заказника')
     telephone = models.CharField(max_length=20, null = False, verbose_name=u'Телефон заказника')
 
